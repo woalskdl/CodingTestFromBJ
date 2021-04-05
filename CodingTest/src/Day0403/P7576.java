@@ -45,7 +45,7 @@ class Tomato{
 					break;
 				}else if(code[2] == this.day) {
 					int[] temp = list.poll();
-					sfs(temp[0], temp[1]);
+					bfs(temp[0], temp[1]);
 				}else
 					break;
 			}
@@ -58,7 +58,7 @@ class Tomato{
 			System.out.println(this.day - 1);
 	}
 	
-	void sfs(int i, int j) {
+	void bfs(int i, int j) {
 		for(int n=0; n<4; n++) {
 			int ny = i + dy[n];
 			int nx = j + dx[n];
