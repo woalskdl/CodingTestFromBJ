@@ -3,157 +3,65 @@ package Day0407;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-class Sort{
-	Matrix m;
-	Queue<Matrix> list = new LinkedList<>();
-	int[][] answer = {{1,2,3},{4,5,6},{7,8,0}};
+class Matrix{
+	String matrix;
 
-	Sort(int[][] init){
-		m = new Matrix(init);
+	int[] dx = {-1 ,1, 0, 0};
+	int[] dy = {0, 0, -1, 1};
+
+	Map<String, Integer> m = new HashMap<>();
+	Queue<String> q = new LinkedList<>();
+	
+	Matrix(String matrix){
+		this.matrix = matrix;
 	}
 	
-	boolean check(int[][] arr) {
-		int cnt = 0;
-		for(int i=0; i<3; i++) {
-			for(int j=0; j<3; j++) {
-				if(arr[i][j] == answer[i][j])
-					cnt ++;
+	void run() {
+		m.put(matrix, 0);
+		q.offer(matrix);
+		while(!q.isEmpty()) {
+			String input = q.poll();
+			int codeX = input.indexOf("9") % 3;
+			int codeY = input.indexOf("9") / 3;
+			
+			for(int i=0; i<4; i++) {
+				int nx = codeX + dx[i];
+				int ny = codeY + dy[i];
+				
+				if(nx >= 0 && nx < 3 && ny >= 0 && ny < 3) {
+					String newMatrix = "";
+					int code = codeX + codeY * 3;
+					int nCode = nx + ny * 3;
+					for(int j=0; j<input.length(); j++) {
+						if(j != nCode && j != code) {
+							newMatrix += input.charAt(j) + "";
+						}else if(j == nCode){
+							newMatrix += "9";
+						}else if(j == code) {
+							newMatrix += input.charAt(nCode) + "";
+						}
+					}
+					
+					if(!m.containsKey(newMatrix)) {
+						m.put(newMatrix, m.get(input) + 1);
+						q.offer(newMatrix);
+					}
+				}
 			}
 		}
 		
-		if(cnt == 9)
-			return true;
+		if(m.containsKey("123456789"))
+			System.out.println(m.get("123456789"));
 		else
-			return false;
-	}
-
-	void run() {
-		list.offer(m);
-		while(!list.isEmpty()) {
-			Matrix matrix = list.peek();		// 여기서 matrix가 list에 담긴 Matrix의 주소값까지 담아오는게 문제인듯
-			if(matrix.empty.x - 1 >= 0) {
-				matrix.moveR();
-				if(check(matrix.arr)) {
-					System.out.println(matrix.moveCnt);
-					break;
-				}
-				list.offer(matrix);
-			}
-			
-			matrix = list.peek();
-			if(matrix.empty.x + 1 < 3) {
-				matrix.moveL();
-				if(check(matrix.arr)) {
-					System.out.println(matrix.moveCnt);
-					break;
-				}
-				list.offer(matrix);
-			}
-			
-			matrix = list.peek();
-			if(matrix.empty.y - 1 >= 0) {
-				matrix.moveD();
-				if(check(matrix.arr)) {
-					System.out.println(matrix.moveCnt);
-					break;
-				}
-				list.offer(matrix);
-			}
-			
-			matrix = list.peek();
-			if(matrix.empty.y + 1 < 3) {
-				matrix.moveU();
-				if(check(matrix.arr)) {
-					System.out.println(matrix.moveCnt);
-					break;
-				}
-				list.offer(matrix);
-			}
-			
-			list.poll();
-			break;
-		}
-	}
-}
-
-class Matrix{
-	int[][] arr;
-	Code empty;
-	int moveCnt;
-	
-	Matrix(int[][] arr){
-		this.arr = arr;
-		for(int i=0; i<3; i++) {
-			for(int j=0; j<3; j++) {
-				if(arr[i][j] == 0)
-					this.empty = new Code(i,j);
-			}
-		}
-		this.moveCnt = 0;
+			System.out.println("-1");
 	}
 	
-	void moveR() {
-		int temp = arr[empty.y][empty.x - 1];
-		arr[empty.y][empty.x - 1] = 0;
-		arr[empty.y][empty.x] = temp;
-		empty.x -= 1;
-		this.moveCnt += 1;
-		System.out.println("Move Right");
-		print(arr);
-	}
-
-	void moveL() {
-		int temp = arr[empty.y][empty.x + 1];
-		arr[empty.y][empty.x + 1] = 0;
-		arr[empty.y][empty.x] = temp;
-		empty.x += 1;
-		this.moveCnt += 1;
-		System.out.println("Move Left");
-		print(arr);
-	}
-
-	void moveD() {
-		int temp = arr[empty.y - 1][empty.x];
-		arr[empty.y - 1][empty.x] = 0;
-		arr[empty.y][empty.x] = temp;
-		empty.y -= 1;
-		this.moveCnt += 1;
-		System.out.println("Move Down");
-		print(arr);
-	}
-
-	void moveU() {
-		int temp = arr[empty.y + 1][empty.x];
-		arr[empty.y + 1][empty.x] = 0;
-		arr[empty.y][empty.x] = temp;
-		empty.y += 1;
-		this.moveCnt += 1;
-		System.out.println("Move Up");
-		print(arr);
-	}
-	
-	void print(int[][] matrix) {
-		for(int i=0; i<3; i++) {
-			for(int j=0; j<3; j++) {
-				System.out.print(matrix[i][j] + " ");
-			}
-			System.out.println();
-		}
-	}
-}
-
-class Code{
-	int y;
-	int x;
-	
-	Code(int y, int x){
-		this.y = y;
-		this.x = x;
-	}
 }
 
 public class P1525 {
@@ -161,15 +69,18 @@ public class P1525 {
 		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
-		int[][] arr = new int[3][3];
+		String matrix = "";
 		for(int i=0; i<3; i++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			for(int j=0; j<3; j++) {
-				arr[i][j] = Integer.parseInt(st.nextToken());
+				String n = st.nextToken();
+				if(n.equals("0"))
+					n = "9";
+				matrix += n;
 			}
 		}
 		
-		Sort m = new Sort(arr);
+		Matrix m = new Matrix(matrix);
 		m.run();
 		
 	}
