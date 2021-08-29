@@ -1,9 +1,11 @@
-package d210828;
+package d210829;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class P9205_my {
     static int t;
