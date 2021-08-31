@@ -14,7 +14,7 @@ public class P3197_answer {
 
     static List<Node> point;
 
-    static public class Node{
+    static private class Node{
         int y;
         int x;
 
