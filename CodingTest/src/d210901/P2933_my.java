@@ -1,4 +1,4 @@
-package d210831;
+package d210901;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +9,7 @@ public class P2933_my {
 
     static int R, C, N;
     static char[][] arr;
+    static int[][] fallArr;
     static List<Node> dropList;
 
     static private class Node implements Comparable<Node>{
@@ -72,18 +73,8 @@ public class P2933_my {
 
             if(fallCk())
                 fall();
-
-            for(int j=0; j<R; j++){
-                for(int k=0; k<C; k++){
-                    System.out.print(arr[j][k]);
-                }
-                System.out.println();
-            }
-
-            System.out.println();
         }
 
-        System.out.println("=======================");
         for(int i=0; i<R; i++){
             for(int j=0; j<C; j++){
                 System.out.print(arr[i][j]);
@@ -99,6 +90,7 @@ public class P2933_my {
         for(int i=0; i<R; i++){
             for(int j=0; j<C; j++){
                 if(arr[i][j] == 'x' && !visited[i][j]){
+                    fallArr = new int[R][C];
                     dropList = new ArrayList<>();
                     Node start = new Node(i, j);
                     queue.add(start);
@@ -109,6 +101,7 @@ public class P2933_my {
                     while (!queue.isEmpty()){
                         Node node = queue.poll();
                         dropList.add(node);
+                        fallArr[node.y][node.x] = 1;
                         for(int k=0; k<4; k++){
                             int ny = node.y + dy[k];
                             int nx = node.x + dx[k];
@@ -121,12 +114,8 @@ public class P2933_my {
                         }
                     }
 
-                    if(ck != R - 1){
-                        for(int k=0; k< dropList.size(); k++){
-                            System.out.println(dropList.get(k).y + " / " + dropList.get(k).x);
-                        }
+                    if(ck != R - 1)
                         return true;
-                    }
                 }
             }
         }
@@ -140,16 +129,21 @@ public class P2933_my {
         while (ck){
             for(int i=0; i<dropList.size(); i++){
                 Node node = dropList.get(i);
+                if(node.y == R - 1){
+                    ck = false;
+                    break;
+                }
+
                 arr[node.y][node.x] = '.';
+                fallArr[node.y][node.x] = 0;
+
                 arr[node.y + 1][node.x] = 'x';
+                fallArr[node.y + 1][node.x] = 1;
                 dropList.set(i, new Node(node.y + 1, node.x));
 
-                System.out.println(dropList.get(i).y + " : " + dropList.get(i).x);
-
-                if(dropList.get(i).y >= R || arr[dropList.get(i).y + 1][dropList.get(i).x] == 'x'){
-                    System.out.println(i);
+                int yck = node.y + 1;
+                if(fallArr[yck][dropList.get(i).x] != 1 && arr[yck][dropList.get(i).x] == 'x')
                     ck = false;
-                }
             }
         }
     }
