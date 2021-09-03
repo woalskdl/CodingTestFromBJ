@@ -1,4 +1,4 @@
-package d210901;
+package d210902;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,14 +71,6 @@ public class P2933_my {
                 }
             }
 
-            for(int j=0; j<R; j++){
-                for(int k=0; k<C; k++){
-                    System.out.print(arr[j][k]);
-                }
-                System.out.println();
-            }
-            System.out.println();
-
             if(fallCk())
                 fall();
 
@@ -89,7 +81,6 @@ public class P2933_my {
                 System.out.println();
             }
             System.out.println();
-
         }
 
         for(int i=0; i<R; i++){
@@ -118,7 +109,6 @@ public class P2933_my {
                         Node node = queue.poll();
                         dropList.add(node);
                         fallArr[node.y][node.x] = 1;
-                        ck.add(node.y);
                         for(int k=0; k<4; k++){
                             int ny = node.y + dy[k];
                             int nx = node.x + dx[k];
@@ -126,6 +116,7 @@ public class P2933_my {
                             if(inArea(ny, nx) && !visited[ny][nx] && arr[ny][nx] == 'x'){
                                 queue.add(new Node(ny, nx));
                                 visited[ny][nx] = true;
+                                ck.add(ny);
                             }
                         }
                     }
@@ -147,6 +138,10 @@ public class P2933_my {
         while (ck){
             if(dropList.get(0).y == R - 1)
                 return;
+
+            for(int i=0; i<dropList.size(); i++){
+                System.out.println(dropList.get(i).y + " / " + dropList.get(i).x);
+            }
 
             System.out.println("떨어짐");
             for(int i=0; i<dropList.size(); i++){
