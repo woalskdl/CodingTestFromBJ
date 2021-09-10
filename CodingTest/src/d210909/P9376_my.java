@@ -12,12 +12,10 @@ public class P9376_my {
     static private class MapInfo{
         private char[][] map;
         private List<Node> nodes;
-        private List<Node> exits;
 
-        public MapInfo(char[][] map, List<Node> nodes, List<Node> exits) {
+        public MapInfo(char[][] map, List<Node> nodes) {
             this.map = map;
             this.nodes = nodes;
-            this.exits = exits;
         }
     }
 
@@ -27,10 +25,12 @@ public class P9376_my {
     static private class Node{
         private int y;
         private int x;
+        private Node node;
 
-        public Node(int y, int x) {
+        public Node(int y, int x, Node node) {
             this.y = y;
             this.x = x;
+            this.node = node;
         }
 
         @Override
@@ -55,23 +55,23 @@ public class P9376_my {
 
             char[][] map = new char[h][w];
             List<Node> nodes = new ArrayList<>();
-            List<Node> exits = new ArrayList<>();
+            int exitCnt = 0;
 
             for(int j=0; j<h; j++){
                 String line = br.readLine();
                 for(int k=0; k<w; k++){
                     map[j][k] = line.charAt(k);
                     if(map[j][k] == '$')
-                        nodes.add(new Node(j, k));
+                        nodes.add(new Node(j, k, null));
 
-                    if(j == 0 || k == 0 || j == h - 1 || k == w - 1){
-                        if(map[j][k] == '#' || map[j][k] == '.')
-                            exits.add(new Node(j, k));
-                    }
+//                    if(j == 0 || k == 0 || j == h - 1 || k == w - 1){
+//                        if(map[j][k] == '#' || map[j][k] == '.')
+//                            exitCnt += 1;
+//                    }
 
                 }
             }
-            maps.add(new MapInfo(map, nodes, exits));
+            maps.add(new MapInfo(map, nodes));
         }
 
         for(int i=0; i<T; i++){
@@ -86,8 +86,6 @@ public class P9376_my {
 //            System.out.println("\nnode1 : " + maps.get(i).nodes.get(0).y + " / " + maps.get(i).nodes.get(0).x);
 //            System.out.println("node2 : " + maps.get(i).nodes.get(1).y + " / " + maps.get(i).nodes.get(1).x + "\n");
 //
-//            for(int j=0; j<maps.get(i).exits.size(); j++)
-//                System.out.println("exit" + i + " : " + maps.get(i).exits.get(j).y + " / " + maps.get(i).exits.get(j).x);
 //            //
 
             System.out.println(bfs(maps.get(i)));
@@ -96,79 +94,98 @@ public class P9376_my {
 
     private static int bfs(MapInfo mapInfo){
 
-        class Info{
-            private Node node;
-            private List<Node> route;
-            private int doorCnt;
-
-            public Info(Node node, List<Node> route, int doorCnt) {
-                this.node = node;
-                this.route = route;
-                this.doorCnt = doorCnt;
-            }
-        }
-
         List<char[][]> maps = new ArrayList<>();
         List<Integer> count = new ArrayList<>();
 
-        char[][] map = copy(mapInfo.map);
+        char[][] map = mapInfo.map;
         boolean[][] visited = new boolean[map.length][map[0].length];
 
-        Queue<Info> queue = new LinkedList<>();
-        List<Node> route = new ArrayList<>();
+        Queue<Node> queue = new LinkedList<>();
 
         Node node1 = mapInfo.nodes.get(0);
-        route.add(node1);
-        queue.add(new Info(node1, route, 0 ));
+        queue.add(node1);
         visited[node1.y][node1.x] = true;
 
         while (!queue.isEmpty()) {
-            Info info = queue.poll();
-            Node node = info.node;
+            Node node = queue.poll();
 
-//            if(node.equals(mapInfo.nodes.get(0))){
-//                count1.add(info.doorCnt);
-//                endCnt += 1;
-//            }
-//            if(node.equals(mapInfo.nodes.get(1))){
-//                count2.add(info.doorCnt);
-//                endCnt += 1;
-//            }
-//
-//            if(endCnt == 2)
-//                break;
+            if(node.y == 0 || node.x == 0 || node.y == map.length - 1 || node.x == map[0].length - 1){
+                char[][] tempMap = copy(map);
+                Node ck = node;
+                int doorCnt = 0;
+                while (ck != null){
+                    if(tempMap[ck.y][ck.x] == '#'){
+                        doorCnt += 1;
+                        tempMap[ck.y][ck.x] = '.';
+                    }
 
-            if(node.y == 0 || node.x == 0 || node.y == map.length - 1 || node.x == map[0].length - 1)
+                    ck = ck.node;
+                }
 
+                for(int i=0; i<map.length; i++){
+                    for(int j=0; j<map[0].length; j++){
+                        System.out.print(tempMap[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+                System.out.println(doorCnt);
+                System.out.println();
+
+                maps.add(tempMap);
+                count.add(doorCnt);
+            }
 
             for (int j = 0; j < 4; j++) {
                 int ny = node.y + dy[j];
                 int nx = node.x + dx[j];
 
                 if (inArea(ny, nx, map) && !visited[ny][nx] && map[ny][nx] != '*') {
-                    int doorCnt = info.doorCnt;
-                    if(map[ny][nx] == '#'){
-                        map[ny][nx] = '.';
-                        doorCnt += 1;
-                    }
-
-                    List<Node> tempRoute = new ArrayList<>();
-                    tempRoute.addAll(info.route);
-                    tempRoute.add(new Node(ny, nx));
-
-                    queue.add(new Info(new Node(ny, nx), tempRoute, doorCnt));
+                    queue.add(new Node(ny, nx, node));
                     visited[ny][nx] = true;
                 }
             }
         }
 
-        count1.sort(Comparator.naturalOrder());
-        count2.sort(Comparator.naturalOrder());
+        List<Integer> totalCnt = new ArrayList<>();
 
-        System.out.println(count1.toString());
-        System.out.println(count2.toString());
+        for(int i=0; i<maps.size(); i++){
+            char[][] newMap = maps.get(i);
+            boolean[][] newVisited = new boolean[newMap.length][newMap[0].length];
 
-        return count1.get(0) + count2.get(0);
+            Queue<Node> queue1 = new LinkedList<>();
+
+            Node node2 = mapInfo.nodes.get(1);
+            queue1.add(node2);
+            newVisited[node2.y][node2.x] = true;
+
+            while (!queue1.isEmpty()){
+                Node node = queue1.poll();
+
+                if(node.y == 0 || node.x == 0 || node.y == map.length - 1 || node.x == map[0].length - 1){
+                    Node ck = node;
+                    int doorCnt = 0;
+                    while (ck != null){
+                        if(newMap[ck.y][ck.x] == '#'){
+                            doorCnt += 1;
+                        }
+                    }
+                    totalCnt.add(count.get(i) + doorCnt);
+                }
+
+                for(int j=0; j<4; j++){
+                    int ny = node.y + dy[j];
+                    int nx = node.x + dx[j];
+
+                    if(inArea(ny, nx, newMap) && !newVisited[ny][nx] & newMap[ny][nx] != '*'){
+                        queue1.add(new Node(ny, nx, node));
+                        newVisited[ny][nx] = true;
+                    }
+                }
+            }
+        }
+
+        System.out.println(totalCnt.toString());
+        return Collections.min(totalCnt);
     }
 
     private static boolean inArea(int y, int x, char[][] map){
