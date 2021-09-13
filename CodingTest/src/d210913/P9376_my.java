@@ -1,4 +1,4 @@
-package d210909;
+package d210913;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,23 +22,27 @@ public class P9376_my {
     private static int[] dx = {-1, 1, 0, 0};
     private static int[] dy = {0, 0, -1, 1};
 
-    static private class Node{
+    static private class Node implements Comparable<Node>{
         private int y;
         private int x;
         private Node node;
+        private int doorCk;
 
-        public Node(int y, int x, Node node) {
+        public Node(int y, int x, Node node, int doorCk) {
             this.y = y;
             this.x = x;
             this.node = node;
+            this.doorCk = doorCk;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Node node = (Node) o;
-            return y == node.y && x == node.x;
+        public int compareTo(Node o) {
+            if(this.doorCk > o.doorCk)
+                return 1;
+            else if(this.doorCk < o.doorCk)
+                return -1;
+
+            return 0;
         }
     }
 
@@ -62,7 +66,7 @@ public class P9376_my {
                 for(int k=0; k<w; k++){
                     map[j][k] = line.charAt(k);
                     if(map[j][k] == '$')
-                        nodes.add(new Node(j, k, null));
+                        nodes.add(new Node(j, k, null, 0));
 
 //                    if(j == 0 || k == 0 || j == h - 1 || k == w - 1){
 //                        if(map[j][k] == '#' || map[j][k] == '.')
@@ -100,7 +104,7 @@ public class P9376_my {
         char[][] map = mapInfo.map;
         boolean[][] visited = new boolean[map.length][map[0].length];
 
-        Queue<Node> queue = new LinkedList<>();
+        PriorityQueue<Node> queue = new PriorityQueue<>();
 
         Node node1 = mapInfo.nodes.get(0);
         queue.add(node1);
@@ -139,8 +143,11 @@ public class P9376_my {
                 int ny = node.y + dy[i];
                 int nx = node.x + dx[i];
 
-                if (inArea(ny, nx, map) && !visited[ny][nx] && map[ny][nx] != '*') {
-                    queue.add(new Node(ny, nx, node));
+                if (inArea(ny, nx, map) && !visited[ny][nx] && map[ny][nx] != '*'){
+                    int doorCk = 0;
+                    if(map[ny][nx] == '#')
+                        doorCk = 1;
+                    queue.add(new Node(ny, nx, node, doorCk));
                     visited[ny][nx] = true;
                 }
             }
@@ -152,7 +159,7 @@ public class P9376_my {
             char[][] newMap = maps.get(i);
             visited = new boolean[newMap.length][newMap[0].length];
 
-            queue = new LinkedList<>();
+            queue = new PriorityQueue<>();
 
             Node node2 = mapInfo.nodes.get(1);
             queue.add(node2);
@@ -178,7 +185,10 @@ public class P9376_my {
                     int nx = node.x + dx[j];
 
                     if(inArea(ny, nx, newMap) && !visited[ny][nx] & newMap[ny][nx] != '*'){
-                        queue.add(new Node(ny, nx, node));
+                        int doorCk = 0;
+                        if(newMap[ny][nx] == '#')
+                            doorCk = 1;
+                        queue.add(new Node(ny, nx, node, doorCk));
                         visited[ny][nx] = true;
                     }
                 }
