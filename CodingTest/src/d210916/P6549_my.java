@@ -3,10 +3,7 @@ package d210916;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class P6549_my {
 
@@ -32,31 +29,36 @@ public class P6549_my {
 
         for(int i=0, size = caseList.size(); i<size; i++){
             int[] shapes = caseList.get(i);
-            boolean[] visited = new boolean[shapes.length];
 
-            int max = Arrays.stream(shapes).max().getAsInt();
-            int min = Arrays.stream(shapes).min().getAsInt();
-
-            int area = shapes[0];
             List<Integer> areas = new ArrayList<>();
-            areas.add(area);
 
-            for(int j=0, length = shapes.length; j<length && !visited[j]; j++){
+            for(int j=0, length = shapes.length; j<length; j++){
+                boolean[] visited = new boolean[length];
+                int area = shapes[j];
 
-                if(j - 1 >= 0 && shapes[j-1] < shapes[j]){
-                }else {
-                    areas.add(area);
-
-                }
-                    area = shapes[j];
-
-                if(shapes[j + 1] >= shapes[j])
-                    area += shapes[j];
-                else
-                    visited[j + 1] = true;
-
+                Queue<Integer> queue = new LinkedList<>();
+                queue.add(j);
                 visited[j] = true;
+
+                while (!queue.isEmpty()){
+                    int idx = queue.poll();
+                    if(idx + 1 < length - 1 && shapes[idx + 1] >= shapes[idx] && !visited[idx + 1]){
+                        queue.add(idx + 1);
+                        visited[idx + 1] = true;
+                        area += shapes[j];
+
+                    }
+                    if(idx - 1 >= 0 && shapes[idx - 1] >= shapes[idx] && !visited[idx - 1]){
+                        queue.add(idx - 1);
+                        visited[idx - 1] = true;
+                        area += shapes[j];
+                    }
+                }
+
+                areas.add(area);
             }
+
+            System.out.println(Collections.max(areas));
         }
     }
 }
