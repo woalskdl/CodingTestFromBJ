@@ -186,7 +186,7 @@ public class P9376_my {
 
         }
 
-        System.out.println(totalCnt.toString());
+        System.out.println(totalCnt.toString() + "test");
         return Collections.min(totalCnt);
     }
 
