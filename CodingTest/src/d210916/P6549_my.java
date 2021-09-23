@@ -15,16 +15,13 @@ public class P6549_my {
 
         caseList = new ArrayList<>();
 
-        int n = Integer.parseInt(st.nextToken());
-        while (n != 0){
+        for(int n = Integer.parseInt(st.nextToken()); n != 0; n = Integer.parseInt(st.nextToken())){
             int[] shapes = new int[n];
             for(int i=0; i<n; i++)
                 shapes[i] = Integer.parseInt(st.nextToken());
 
             caseList.add(shapes);
-
             st = new StringTokenizer(br.readLine());
-            n = Integer.parseInt(st.nextToken());
         }
 
         for(int i=0, size = caseList.size(); i<size; i++){
@@ -48,6 +45,7 @@ public class P6549_my {
                         area += shapes[j];
 
                     }
+
                     if(idx - 1 >= 0 && shapes[idx - 1] >= shapes[idx] && !visited[idx - 1]){
                         queue.add(idx - 1);
                         visited[idx - 1] = true;
