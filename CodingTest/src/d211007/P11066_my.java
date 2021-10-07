@@ -1,4 +1,4 @@
-package d211006;
+package d211007;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,16 +64,16 @@ public class P11066_my {
                 int[] temp = new int[length - 1];
                 int num = sum;
 
-                System.out.println("i : " + i);
-
                 for(int j=0, tempLength = temp.length; j<tempLength; j++){
+                    int x = files[j];
+                    int nx = files[j + 1];
                     if(j == i){
-                        temp[j] = files[j] + files[j + 1];
-                        num += temp[j];
+                        temp[j] = x + nx;
+                        num += (x + nx);
                     }else if(j > i){
-                        temp[j] = files[j + 1];
+                        temp[j] = nx;
                     }else{
-                        temp[j] = files[j];
+                        temp[j] = x;
                     }
                 }
 
