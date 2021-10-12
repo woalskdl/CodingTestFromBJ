@@ -3,10 +3,7 @@ package d211007;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class P11066_answer {
     private static int T;
@@ -34,6 +31,8 @@ public class P11066_answer {
                 else
                     sum[j] += (sum[j - 1] + files[j]);
             }
+
+            System.out.println(sol(files, sum));
         }
     }
 
@@ -47,16 +46,16 @@ public class P11066_answer {
     private static int sol(int[] files, int[] sum){
         int[][] dp = new int[files.length][files.length];
 
-        for(int i=0; i<dp.length; i++)
+        for(int i=0; i<dp.length - 1; i++)
             dp[i][i + 1] = files[i] + files[i + 1];
 
         for (int j=2; j<dp.length; j++){
             for(int i=0; i + j < dp.length; i++){
                 for(int k=i; k<i + j; k++){
-                    if(dp[i][j+j] == 0){
-                        dp[i][i+j] = dp[i][j] + dp[k+1][i+j] + sumDist(sum, i, i+j);
+                    if(dp[i][i+j] == 0){
+                        dp[i][i+j] = dp[i][k] + dp[k+1][i+j] + sumDist(sum, i, i+j);
                     }else{
-                        dp[i][i+j] = Math.min(dp[i][i+j], dp[i][j] + dp[k+1][i+j] + sumDist(sum,i,i+j));
+                        dp[i][i+j] = Math.min(dp[i][i+j], dp[i][k] + dp[k+1][i+j] + sumDist(sum,i,i+j));
                     }
                 }
             }
