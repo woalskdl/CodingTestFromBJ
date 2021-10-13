@@ -1,4 +1,4 @@
-package d211012;
+package d211013;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,9 +52,9 @@ public class P11049_my {
                     int cnt2 = arr[k + 1][i + j].cnt;
 
                     if (arr[j][i + j] == null){
-                        arr[j][i + j] = new Matrix(n, l, cnt1 + cnt2 + n * m * l);
+                        arr[j][i + j] = new Matrix(n, l, (cnt1 + cnt2 + n * m * l));
                     } else {
-                        int min = Math.min(arr[i][i + j].cnt, (cnt1 + cnt2 + n * m * l));
+                        int min = Math.min(arr[j][i + j].cnt, (cnt1 + cnt2 + n * m * l));
                         arr[j][i + j] = new Matrix(n, l, min);
                     }
                 }
