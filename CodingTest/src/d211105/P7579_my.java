@@ -1,4 +1,4 @@
-package d211104;
+package d211105;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,18 +52,22 @@ public class P7579_my {
 
         for (int i = 2; i < N; i++) {
             for (int j = 0; j < N - i; j++) {
-                for (int k = j; k < i + j; j++) {
-                    int memory = apps[j][k].memory + apps[i + j - k][i + j].memory;
-                    int cost = Math.min(apps[i][j].cost, apps[j][k].cost + apps[i + j - k][i + j].cost);
+                for (int k = j; k < i + j; k++) {
+                    int memory = apps[j][k].memory + apps[k + 1][i + j].memory;
+                    int cost = 0;
+                    if(apps[j][i+j].cost == 0)
+                        cost = apps[j][k].cost + apps[k + 1][i + j].cost;
+                    else
+                        cost = Math.min(apps[j][i + j].cost, apps[j][k].cost + apps[k + 1][i + j].cost);
                     apps[j][i + j] = new App(memory, cost);
                 }
             }
         }
 
         int result = Integer.MAX_VALUE;
-        for(int i=0; i<N; i++){
-            for(int j=0; j<N; j++){
-                if(apps[i][j].memory >= M && result > apps[i][j].cost)
+        for (int i = 0; i < N; i++) {
+            for (int j = i; j < N; j++) {
+                if (apps[i][j].memory >= M && result > apps[i][j].cost)
                     result = apps[i][j].cost;
             }
         }
