@@ -1,4 +1,4 @@
-package d211123;
+package d211124;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,10 +25,7 @@ public class P1912_my {
     }
 
     private static int dp(int i, int sum) {
-        if (i == n - 1)
-            return sum + arr[i];
-
-        if (i == n)
+        if (i >= n - 1)
             return sum;
 
         if (sum < 0)
