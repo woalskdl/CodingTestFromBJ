@@ -47,7 +47,7 @@ public class P10844_my {
             int index = node.i;
 
             if(size >= N){
-                result = result % 1000000000 + 1;
+                result = size % 1000000000 + 1;
                 continue;
             }
 
@@ -65,6 +65,19 @@ public class P10844_my {
                 queue.add(new Node(nIndex, nSize));
             }
         }
+    }
+
+    private static int dp(int i, int size){
+        if(size >= N)
+            return dp(i, size % 1000000000 + 1);
+
+        if(i > 0)
+            return dp(i - 1, size + 1);
+
+        if(i < 9)
+            return dp(i + 1, size + 1);
+
+        return size;
     }
 
 }
