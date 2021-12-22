@@ -10,5 +10,18 @@ public class P1699_my {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
+
+        int count = 0;
+        while (true){
+            int a = (int) Math.floor(N);
+            count += 1;
+
+            int b = N - a;
+            if(b == 0){
+                break;
+            }
+        }
+
+        System.out.println(count);
     }
 }
