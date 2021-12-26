@@ -1,9 +1,8 @@
-package d211223;
+package d211226;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class P1699_my {
     private static int N;
@@ -14,12 +13,12 @@ public class P1699_my {
         N = Integer.parseInt(br.readLine());
         arr = new Integer[N + 1];
 
-        System.out.println(dp(N, 0));
+        System.out.println(dp(N));
     }
 
-    private static int dp(int val, int count){
+    private static int dp(int val){
         if(val == 0)
-            return count;
+            return 0;
 
         if(arr[val] != null)
             return arr[val];
@@ -27,7 +26,7 @@ public class P1699_my {
         int a = (int) Math.floor(Math.sqrt(val));
         arr[val] = Integer.MAX_VALUE;
         for(int i=a; i>0; i--)
-            arr[val] = Math.min(arr[val], dp(val - (int) Math.pow(i, 2), count) + 1);
+            arr[val] = Math.min(arr[val], dp(val - (int) Math.pow(i, 2)) + 1);
 
         return arr[val];
     }
